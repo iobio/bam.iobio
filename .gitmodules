@@ -1,0 +1,3 @@
+[submodule "lib/iobio-charts"]
+	path = lib/iobio-charts
+	url = https://github.com/iobio/iobio-charts

@@ -1,0 +1,388 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>iobio charts</title>
+
+    <style>
+
+      :root {
+        font-family: Arial;
+        //--iobio-data-color: orange;
+        //--iobio-data-color-secondary: blue;
+      }
+
+      body {
+        margin: 0;
+      }
+
+
+      #home-page, #help-page {
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      main {
+        padding: 40px 10px 10px 10px;
+        box-sizing: border-box;
+      }
+
+      .read-depth-container {
+        height: 320px;
+        margin-bottom: 20px;
+      }
+
+      .bottom-container {
+        display: flex;
+      }
+
+      .percent-row {
+        display: flex;
+        width: 40%;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-content: flex-start;
+      }
+
+      iobio-percent-box {
+        width: 220px;
+        height: 220px;
+      }
+
+      .histogram-column {
+        display: flex;
+        width: 60%;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      iobio-histogram {
+        height: 220px;
+      }
+
+      #bam2-header {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        height: 40px;
+        width: 100%;
+        background-color: #2d8fc1;
+        position: fixed;
+        top: 0;
+        z-index: 1;
+        padding: 0 10px;
+        box-sizing: border-box;
+      }
+
+      #home-button,
+      #help-button {
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+
+      #help-button:hover {
+        background-color: white;
+        color: #2d8fc1;
+      }
+      
+      *:not(:defined) {
+        opacity: 0; 
+      }
+
+      iobio-tab {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div id="bam2-header">
+      <h1 id="home-button" data-link="/">bam2.iobio</h1>
+      <span id="help-button" data-link="/help">Get Help</span>
+    </div>
+
+    <iobio-data-broker></iobio-data-broker>
+
+    <iobio-help-page class="route" id="help-page"></iobio-help-page>
+    <iobio-home-page class="route" id="home-page"></iobio-home-page>
+    <iobio-file-requirements-page class="route" id="file-requirements-page"></iobio-file-requirements-page>
+    <iobio-license-page class="route" id="license-page"></iobio-license-page>
+    <iobio-compatible-browsers-page class="route" id="compatible-browsers-page"></iobio-compatible-browsers-page>
+
+    <main id="main-content">
+      <iobio-bam-controls></iobio-bam-controls>
+      
+      <div class='read-depth-container'>
+        <iobio-coverage-depth
+          label="Read Coverage">
+        </iobio-coverage-depth>
+      </div>
+
+      <div class='bottom-container'>
+        <div class="percent-row">
+
+          <iobio-panel>
+            <iobio-label-info-button label="Mapped Reads">
+              <div slot="content">
+                <p>This is custom content for the Mapped Reads percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="mapped_reads" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+          
+          <iobio-panel>
+            <iobio-label-info-button label="Forward Strands">
+              <div slot="content">
+                <p>This is custom content for the Forward Strands percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="forward_strands" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+
+          <iobio-panel>
+            <iobio-label-info-button label="Proper Pairs">
+              <div slot="content">
+                <p>This is custom content for the Proper Pairs percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="proper_pairs" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+
+          <iobio-panel>
+            <iobio-label-info-button label="Singletons">
+              <div slot="content">
+                <p>This is custom content for the Singletons percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="singletons" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+
+          <iobio-panel>
+            <iobio-label-info-button label="Both Mates Mapped">
+              <div slot="content">
+                <p>This is custom content for the Both Mates Mapped percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="both_mates_mapped" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+         
+          <iobio-panel>
+            <iobio-label-info-button label="Duplicates">
+              <div slot="content">
+                <p>This is custom content for the Duplicates percent box.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-percent-box percent-key="duplicates" total-key="total_reads"></iobio-percent-box>
+          </iobio-panel>
+
+        </div>
+
+        <div class='histogram-column'>
+          <iobio-panel>
+            <iobio-label-info-button label="Read Coverage Distribution">
+              <div slot="content">
+                <p>This is custom content for the Read Coverage Distribution histogram.</p>
+              </div>
+            </iobio-label-info-button>
+
+            <iobio-histogram broker-key="coverage_hist"></iobio-histogram>
+          </iobio-panel>
+
+          <iobio-panel>
+            <iobio-tabs>
+              <iobio-tab slot="tab">
+                <iobio-label-info-button label="Fragment Length" icon-position="left" slot="tab-content">
+                  <div slot="content">
+                    <p>This is custom content for the Fragment Length histogram.</p>
+                  </div>
+                </iobio-label-info-button>
+              </iobio-tab>
+              <iobio-tab-panel slot="panel">
+                <iobio-histogram broker-key="frag_hist" ignore-outliers></iobio-histogram>
+              </iobio-tab-panel>
+
+       
+              <iobio-tab slot="tab">
+                <iobio-label-info-button label="Read Length" slot="tab-content">
+                  <div slot="content">
+                    <p>This is custom content for the Read Length histogram.</p>
+                  </div>
+                </iobio-label-info-button>
+              </iobio-tab>
+              <iobio-tab-panel slot="panel">
+                <iobio-histogram broker-key="length_hist" ignore-outliers></iobio-histogram>
+              </iobio-tab-panel>
+            </iobio-tabs>
+          </iobio-panel>
+
+          <iobio-panel>
+            <iobio-tabs>
+              <iobio-tab slot="tab">
+                <iobio-label-info-button label="Mapping Quality" icon-position="left" slot="tab-content">
+                  <div slot="content">
+                    <p>This is custom content for the Mapping Quality histogram.</p>
+                  </div>
+                </iobio-label-info-button>
+              </iobio-tab> 
+              <iobio-tab-panel slot="panel">
+                <iobio-histogram broker-key="mapq_hist"></iobio-histogram>
+              </iobio-tab-panel> 
+
+            
+              <iobio-tab slot="tab">
+                <iobio-label-info-button label="Base Quality" slot="tab-content">
+                  <div slot="content">
+                    <p>This is custom content for the Base Quality histogram.</p>
+                  </div>
+                </iobio-label-info-button>
+              </iobio-tab>
+              <iobio-tab-panel slot="panel">
+                <iobio-histogram broker-key="baseq_hist"></iobio-histogram>
+              </iobio-tab-panel>
+            </iobio-tabs>
+          </iobio-panel>
+
+        </div>
+      </div>
+    </main>
+
+    <script type=importmap>
+      {
+        "imports": {
+          "d3": "https://cdn.jsdelivr.net/npm/d3@7/+esm"
+        }
+      }
+    </script>
+
+    <script type='module' src='./lib/iobio-charts/index.js'></script>
+    <script type='module'>
+
+      import { parseBedFile } from './lib/iobio-charts/coverage/src/BamData.js';
+
+      const urlParams = new URLSearchParams(window.location.search);
+
+
+      const source = urlParams.get("source");
+
+      let apiUrl;
+      let alignmentUrl;
+      let indexUrl;
+      let bedUrl;
+
+      if (source) {
+        // Mosaic integration
+
+        const backendMap = {
+          "https://mosaic.chpc.utah.edu": "https://mosaic.chpc.utah.edu/gru/api/v1",
+          "https://mosaic-staging.chpc.utah.edu": "https://mosaic-staging.chpc.utah.edu/gru/api/v1",
+        };
+
+        apiUrl = backendMap[source];
+
+        const token = urlParams.get("access_token");
+        const project_id = urlParams.get("project_id");
+        const sample_id = urlParams.get("sample_id");
+
+        const mosaicRequest = mosaicRequesterForProject(source, project_id, token);
+
+        const files = await mosaicRequest(`/samples/${sample_id}/files`);
+
+        const alignmentFile = files.data.filter(f => (f.type == 'bam' || f.type == 'cram'))[0];
+        const indexFile = files.data.filter(f => (f.type == 'bai' || f.type == 'crai'))[0];
+        const bedFile = files.data.filter(f => (f.type == 'bam-bed'))[0];
+
+        const promises = [
+          mosaicRequest(`/files/${alignmentFile.id}/url`),
+          mosaicRequest(`/files/${indexFile.id}/url`),
+        ];
+
+        if (bedFile) {
+          promises.push(mosaicRequest(`/files/${bedFile.id}/url`));
+        }
+
+        const [ alignmentUrlRes, indexUrlRes, bedUrlRes ] = await Promise.all(promises);
+
+        alignmentUrl = alignmentUrlRes.url
+        indexUrl = indexUrlRes.url;
+        bedUrl = bedUrlRes.url;
+      }
+      else {
+        alignmentUrl = urlParams.get("alignment-url");
+        indexUrl = urlParams.get("index-url");
+        bedUrl = urlParams.get("bed-url");
+      }
+
+      const broker = document.querySelector('iobio-data-broker');
+
+      if (apiUrl) {
+        broker.apiUrl = apiUrl;
+      }
+
+      broker.alignmentUrl = alignmentUrl;
+      broker.indexUrl = indexUrl;
+
+      if (bedUrl) {
+        broker.bedUrl = bedUrl;
+      }
+
+
+      function mosaicRequesterForProject(server, projectId, token) {
+
+        async function request(path) {
+          const url = `${server}/api/v1/projects/${projectId}${path}`;
+          const res = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': "Bearer " + token,
+            }
+          });
+
+          return res.json();
+        }
+
+        return request;
+      }
+
+      document.addEventListener('selected-regions-change', (event) => {
+        broker.regions = event.detail;
+      });
+
+      document.addEventListener('bed-file-selected', (event) => {
+        console.log(event.detail)
+      });
+
+      document.addEventListener('bed-file-removed', (event) => {
+        console.log(event.detail)
+      });
+
+      document.addEventListener('local-file-selected', (event) => {
+        console.log(event.detail)
+      });
+
+      // document.addEventListener('remote-file-loaded', (event) => {
+      //   console.log(event.detail)
+      // });
+
+      // document.addEventListener('demo-file-selected', (event) => {
+      //   console.log(event.detail)
+      // });
+
+
+
+    </script>
+  </body>
+
+</html>
