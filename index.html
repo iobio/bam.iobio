@@ -268,9 +268,18 @@
     </script>
 
     <script type='module' src='./lib/iobio-charts/index.js'></script>
+    <script type= 'module' src="./home-page.js"></script>
+    <script type= 'module' src="./file_requirement.js"></script>
+    <script type= 'module' src="./license_page.js"></script>
+    <script type= 'module' src="./compatibility_page.js"></script>
+    <script type= 'module' src="./help_page.js"></script>
+
     <script type='module'>
 
       import { parseBedFile } from './lib/iobio-charts/coverage/src/BamData.js';
+      import { initRouter } from './router.js'
+
+      initRouter()
 
       const urlParams = new URLSearchParams(window.location.search);
 

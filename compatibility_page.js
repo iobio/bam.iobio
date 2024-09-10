@@ -22,7 +22,7 @@ img {
 }
 </style>
 <div id="image-container">
-    <img src="/images/browserCompatability.png" alt="Compatible Browsers" id="browserImage">
+    <img src="/images/browserCompatability.png" alt="Compatible Browsers not found" id="browserImage">
 </div>
 `;
 

@@ -1,4 +1,4 @@
-import { commonCss } from '../../common.js';
+import { commonCss } from './lib/iobio-charts/common.js';
 import { navigateTo } from './router.js';
 import { URLInputModal } from './url_input_modal.js';
 const homePageTemplate = document.createElement('template');
@@ -147,9 +147,9 @@ a {
 <div id="marth-lab-footer">
     <div class="logos">
         <div id="marthlabtext">Marthlab</div>
-        <img src="/images/ustar-ucgd-logo.jpg" style="height:60px;"/>
+        <img src="/images/ustar-ucgd-logo.jpg" style="height:60px;" alt="USTAR UCGD Logo not found"/>
         <a href="http://www.genetics.utah.edu/">
-        <img src="/images/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px"/>
+        <img src="/images/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px" alt="Genetics Logo not found"/>
         </a>
     </div>
 </div>

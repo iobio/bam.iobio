@@ -1,4 +1,4 @@
-import { commonCss } from '../../common.js';
+import { commonCss } from './lib/iobio-charts/common.js';
 const Template = document.createElement('template');
 Template.innerHTML = `
 <style>
