@@ -44,11 +44,13 @@ function router() {
 
         const params = new URLSearchParams(queryString);
         const alignmentUrl = params.get('alignment-url');
-        if (alignmentUrl) {
-            const broker = document.querySelector('iobio-data-broker');
-            if (broker) {
-                broker.alignmentUrl = alignmentUrl;
-            }
+        const indexUrl = params.get('index-url');
+
+        console.log(alignmentUrl, indexUrl)
+        const broker = document.querySelector('iobio-data-broker');
+        if (broker) {
+            broker.alignmentUrl = alignmentUrl || null;
+            broker.indexUrl = indexUrl || null;
         }
     } else if (path === '/file-requirements') {
         fileRequirementPage.style.display = 'block';
@@ -59,7 +61,6 @@ function router() {
     }
     else {
         // Default case: show home page
-        // This includes both "/" and any unrecognized paths
         homePage.style.display = 'block';
     }
 }
