@@ -58,11 +58,11 @@ button {
 </style>
 <dialog class="modal">
     <div class="input-container">
-        <input type="text" placeholder="Bam/Cram URL" />
+        <input type="text" placeholder="Input Bam/Cram URL" />
         <span class="delete-icon">&#x2715;</span>
     </div>
     <div class="input-container">
-        <input type="text" placeholder="Bai/Crai URL (Optional)" />
+        <input type="text" placeholder="Input Bai/Crai URL (Optional)" />
         <span class="delete-icon">&#x2715;</span>
     </div>
     <div class="button-container">
@@ -124,5 +124,5 @@ class URLInputModal extends HTMLElement {
     }
 }
 
-customElements.define('url-input-modal', URLInputModal);
+customElements.define('iobio-url-input-modal', URLInputModal);
 export { URLInputModal };

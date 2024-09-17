@@ -1,6 +1,10 @@
 import { commonCss } from './lib/iobio-charts/common.js';
 import { navigateTo } from './router.js';
 import { URLInputModal } from './url_input_modal.js';
+import { LocalFileInputModal } from './local_file_input_modal.js'; 
+import waygate from 'waygate';
+
+
 const homePageTemplate = document.createElement('template');
 homePageTemplate.innerHTML = `
 <style>
@@ -116,8 +120,7 @@ a {
 
     <div class="file-loading-container">
         <div class="local-file-input">
-            <input type="file" id="local-file-selection" multiple>
-            <label for="local-file-selection" class="file-selection-button">LOCAL BAM/CRAM FILE</label>
+            <div id="local-file-selection-button" class="file-selection-button">LOCAL BAM/CRAM FILE</div>
         </div>
 
         <div class="remote-file-input">
@@ -153,7 +156,8 @@ a {
         </a>
     </div>
 </div>
-<url-input-modal id="modal"></url-input-modal>
+<iobio-url-input-modal id="url-input-modal"></iobio-url-input-modal>
+<iobio-local-file-input-modal id="local-file-input-modal"></iobio-local-file-input-modal>
 `;
 
 class HomePage extends HTMLElement {
@@ -165,17 +169,22 @@ class HomePage extends HTMLElement {
     }
 
     initDOMElements() {
-        this.localFileButton = this.shadowRoot.querySelector('#local-file-selection');
+        this.localFileButton = this.shadowRoot.querySelector('#local-file-selection-button');
         this.remoteFileButton = this.shadowRoot.querySelector('#remote-file-selection-button');
         this.demoFileButton = this.shadowRoot.querySelector('#demo-data-selection-button');
-        this.modal = this.shadowRoot.querySelector('#modal');
+
+        this.localFileInputModal = this.shadowRoot.querySelector('#local-file-input-modal');
+        this.urlInputModal = this.shadowRoot.querySelector('#url-input-modal');
     }
 
     connectedCallback() {
-        this.localFileButton.addEventListener('change', (event) => this.handleLocalFilePick(event));
-        this.remoteFileButton.addEventListener('click', () => this.modal.showModal());
-          // Handle the custom event from the url-input-modal
-          this.modal.addEventListener('remote-file-loaded', (event) => {
+        this.localFileButton.addEventListener('click', () => this.localFileInputModal.showModal());
+        // Handle the custom event from the local-file-input-modal
+        this.localFileInputModal.addEventListener('local-file-loaded', async (event) => this.handleLocalFileLoaded(event));
+
+        this.remoteFileButton.addEventListener('click', () => this.urlInputModal.showModal());
+        // Handle the custom event from the url-input-modal
+        this.urlInputModal.addEventListener('remote-file-loaded', (event) => {
             const [url1, url2] = event.detail.urls;
             this.navigateToMainContent(url1, url2);
         });
@@ -193,56 +202,29 @@ class HomePage extends HTMLElement {
        
     }
 
-    handleLocalFilePick(event) {
-        const files = event.target.files;
-    
-        if (files.length === 2) {
-            const file1 = files[0];
-            const file2 = files[1];
-    
-            // Check for bam & bai or cram & crai file pair
-            if ((file1.name.endsWith('.bam') && file2.name.endsWith('.bai')) || 
-                (file1.name.endsWith('.bai') && file2.name.endsWith('.bam'))) {
-                console.log('Processing BAM and BAI files:', file1.name, file2.name);
-                this.dispatchLocalFileSelectionEvent(file1, file2);
-            } 
-            else if ((file1.name.endsWith('.cram') && file2.name.endsWith('.crai')) || 
-                     (file1.name.endsWith('.crai') && file2.name.endsWith('.cram'))) {
-                console.log('Processing CRAM and CRAI files:', file1.name, file2.name);
-                this.dispatchLocalFileSelectionEvent(file1, file2);
-            } 
-            else {
-                alert('Please select either bam & bai or cram & crai file pair.');
-            }
-        } else {
-            alert('You must select two files: bam & bai or cram & crai.');
-        }
-    }
+    async handleLocalFileLoaded(event) {
+        const files = event.detail.files
+        // set up the waygate
+        const dirTree = waygate.openDirectory();
+        dirTree.addFiles(files)
 
-    dispatchLocalFileSelectionEvent(file1, file2) {
-        const eventDetail = {
-            file1: file1,
-            file2: file2
-        };
-        const fileSelectionEvent = new CustomEvent('local-file-selected', {
-            detail: eventDetail,
-            bubbles: true,
-            composed: true
+        const listener = await waygate.listen({
+            serverDomain: waygate.setServerUri('https://waygate.iobio.io'),
+            tunnelType: 'websocket',
         });
+        
+        // set up the new URLs for the files
+        const tunnelDomain = listener.getDomain();
+        waygate.serve(listener, waygate.directoryTreeHandler(dirTree));
+        const url1 = `https://${tunnelDomain}/${files[0].name}`;
+        const url2 = `https://${tunnelDomain}/${files[1].name}`;
 
-        this.dispatchEvent(fileSelectionEvent);
+        this.navigateToMainContent(url1, url2);
     }
 
     handleDemoFilePick() {
         const demoFileUrl = 'https://s3.amazonaws.com/iobio/NA12878/NA12878.autsome.bam'
         this.navigateToMainContent(demoFileUrl, null);
-        // const fileSelectionEvent =  new CustomEvent('demo-file-selected', { 
-        //     detail: { url: demoFileUrl },
-        //     bubbles: true,
-        //     composed: true 
-        // });
-
-        // this.dispatchEvent(fileSelectionEvent);
     }
 
     // Navigate to the main content page with the URLs
@@ -251,7 +233,7 @@ class HomePage extends HTMLElement {
             'alignment-url': url1,
         });
         if (url2) {
-            console.log(url2)
+            queryParams.append('index-url', url2);
         }
         const mainContentUrl = `/?${queryParams.toString()}`;
         navigateTo(mainContentUrl);
