@@ -66,14 +66,14 @@ button {
 </style>
 <dialog class="modal">
     <div class="input-container">
-        <input type="text" placeholder="Select Bam/Cram file" readonly />
-        <span class="delete-icon">&#x2715;</span>
-        <button class="select-file-button" data-index="0">Select file</button>
+        <input type="text" id="bam-cram-input" placeholder="Select Bam/Cram file" readonly />
+        <span class="delete-icon" id="bam-cram-delete">&#x2715;</span>
+        <button class="select-file-button" id="bam-cram-select">Select file</button>
     </div>
     <div class="input-container">
-        <input type="text" placeholder="Select Bai/Crai file" readonly />
-        <span class="delete-icon">&#x2715;</span>
-        <button class="select-file-button" data-index="1">Select file</button>
+        <input type="text" id="bai-crai-input" placeholder="Select Bai/Crai file" readonly />
+        <span class="delete-icon" id="bai-crai-delete">&#x2715;</span>
+        <button class="select-file-button" id="bai-crai-select">Select file</button>
     </div>
     <div class="button-container">
         <button class="load-button">Load</button>
@@ -91,57 +91,82 @@ class LocalFileInputModal extends HTMLElement {
         this.modal = this.shadowRoot.querySelector('.modal');
         this.loadButton = this.shadowRoot.querySelector('.load-button');
         this.cancelButton = this.shadowRoot.querySelector('.cancel-button');
-        this.deleteIcons = this.shadowRoot.querySelectorAll('.delete-icon');
-        this.inputs = this.shadowRoot.querySelectorAll('input');
-        this.selectFileButtons = this.shadowRoot.querySelectorAll('.select-file-button');
+        
+        this.bamCramInput = this.shadowRoot.querySelector('#bam-cram-input');
+        this.baiCraiInput = this.shadowRoot.querySelector('#bai-crai-input');
 
-        this.selectedFiles = [null, null];
+        this.bamCramDelete = this.shadowRoot.querySelector('#bam-cram-delete');
+        this.baiCraiDelete = this.shadowRoot.querySelector('#bai-crai-delete');
+
+        this.bamCramSelect = this.shadowRoot.querySelector('#bam-cram-select');
+        this.baiCraiSelect = this.shadowRoot.querySelector('#bai-crai-select');
+
+        this.selectedBamCramFile = null;
+        this.selectedBaiCraiFile = null;
         this.addEventListeners();
     }
 
     addEventListeners() {
         this.loadButton.addEventListener('click', () => this.handleLoad());
         this.cancelButton.addEventListener('click', () => this.close());
-        this.deleteIcons.forEach((icon, index) => {
-            icon.addEventListener('click', () => this.clearInput(index));
-        });
-        this.selectFileButtons.forEach((button) => {
-            button.addEventListener('click', (event) => this.selectFile(event.target.dataset.index));
-        });
+
+        this.bamCramDelete.addEventListener('click', () => this.clearBamCramInput());
+        this.baiCraiDelete.addEventListener('click', () => this.clearBaiCraiInput());
+
+        this.bamCramSelect.addEventListener('click', () => this.selectBamCramFile());
+        this.baiCraiSelect.addEventListener('click', () => this.selectBaiCraiFile());
     }
 
     handleLoad() {
-        if (!this.selectedFiles[0]) {
+        if (!this.selectedBamCramFile) {
             alert('The BAM/CRAM file is required!');
             return;
         }
         
-        if (!this.selectedFiles[1]) {
+        if (!this.selectedBaiCraiFile) {
             alert('The BAI/CRAI file is required!');
             return;
         }
         this.dispatchEvent(new CustomEvent('local-file-loaded', {
-            detail: { files: this.selectedFiles },
+            detail: { files: [this.selectedBamCramFile, this.selectedBaiCraiFile] },
             bubbles: true,
             composed: true
         }));
         this.close();
     }
 
-    clearInput(index) {
-        this.inputs[index].value = '';
-        this.selectedFiles[index] = null;
+    clearBamCramInput() {
+        this.bamCramInput.value = '';
+        this.selectedBamCramFile = null;
     }
 
-    selectFile(index) {
+    clearBaiCraiInput() {
+        this.baiCraiInput.value = '';
+        this.selectedBaiCraiFile = null;
+    }
+
+    selectBamCramFile() {
+        this.selectFile('.bam,.cram', (file) => {
+            this.bamCramInput.value = file.name;
+            this.selectedBamCramFile = file;
+        });
+    }
+
+    selectBaiCraiFile() {
+        this.selectFile('.bai,.crai', (file) => {
+            this.baiCraiInput.value = file.name;
+            this.selectedBaiCraiFile = file;
+        });
+    }
+
+    selectFile(accept, callback) {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = index === '0' ? '.bam,.cram' : '.bai,.crai';
+        input.accept = accept;
         input.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                this.inputs[index].value = file.name;
-                this.selectedFiles[index] = file; 
+                callback(file);
             }
         });
         input.click();
