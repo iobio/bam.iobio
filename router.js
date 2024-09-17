@@ -41,16 +41,13 @@ function router() {
         mainContent.style.visibility = 'visible';
         mainContent.style.position = 'relative'; // Back to normal position
         mainContent.style.top = '0';
-
         const params = new URLSearchParams(queryString);
         const alignmentUrl = params.get('alignment-url');
         const indexUrl = params.get('index-url');
-
-        console.log(alignmentUrl, indexUrl)
         const broker = document.querySelector('iobio-data-broker');
         if (broker) {
-            broker.alignmentUrl = alignmentUrl || null;
-            broker.indexUrl = indexUrl || null;
+            broker.alignmentUrl = alignmentUrl;
+            broker.indexUrl = indexUrl;
         }
     } else if (path === '/file-requirements') {
         fileRequirementPage.style.display = 'block';

@@ -156,5 +156,5 @@ class LocalFileInputModal extends HTMLElement {
     }
 }
 
-customElements.define('local-file-input-modal', LocalFileInputModal);
+customElements.define('iobio-local-file-input-modal', LocalFileInputModal);
 export { LocalFileInputModal };

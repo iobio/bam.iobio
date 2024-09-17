@@ -124,5 +124,5 @@ class URLInputModal extends HTMLElement {
     }
 }
 
-customElements.define('url-input-modal', URLInputModal);
+customElements.define('iobio-url-input-modal', URLInputModal);
 export { URLInputModal };

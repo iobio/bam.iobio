@@ -1,7 +1,7 @@
 import { commonCss } from './lib/iobio-charts/common.js';
 import { navigateTo } from './router.js';
 import { URLInputModal } from './url_input_modal.js';
-import { LocalFileInputModal } from './localFile_input_modal.js'; 
+import { LocalFileInputModal } from './local_file_input_modal.js'; 
 import waygate from 'waygate';
 
 
@@ -156,8 +156,8 @@ a {
         </a>
     </div>
 </div>
-<url-input-modal id="url-input-modal"></url-input-modal>
-<local-file-input-modal id="local-file-input-modal"></local-file-input-modal>
+<iobio-url-input-modal id="url-input-modal"></iobio-url-input-modal>
+<iobio-local-file-input-modal id="local-file-input-modal"></iobio-local-file-input-modal>
 `;
 
 class HomePage extends HTMLElement {
@@ -204,19 +204,22 @@ class HomePage extends HTMLElement {
 
     async handleLocalFileLoaded(event) {
         const files = event.detail.files
-            const dirTree = waygate.openDirectory();
-            dirTree.addFiles(files)
+        // set up the waygate
+        const dirTree = waygate.openDirectory();
+        dirTree.addFiles(files)
 
-            const listener = await waygate.listen({
-                serverDomain: 'waygate.io',
-                tunnelType: 'websocket',
-              });
+        const listener = await waygate.listen({
+            serverDomain: waygate.setServerUri('https://waygate.iobio.io'),
+            tunnelType: 'websocket',
+        });
+        
+        // set up the new URLs for the files
+        const tunnelDomain = listener.getDomain();
+        waygate.serve(listener, waygate.directoryTreeHandler(dirTree));
+        const url1 = `https://${tunnelDomain}/${files[0].name}`;
+        const url2 = `https://${tunnelDomain}/${files[1].name}`;
 
-            const tunnelDomain = listener.getDomain();
-            waygate.serve(listener, waygate.directoryTreeHandler(dirTree));
-            const url1 = `https://${tunnelDomain}/${files[0].name}`
-            const url2 = `https://${tunnelDomain}/${files[1].name}`
-            this.navigateToMainContent(url1, url2);
+        this.navigateToMainContent(url1, url2);
     }
 
     handleDemoFilePick() {
@@ -232,7 +235,6 @@ class HomePage extends HTMLElement {
         if (url2) {
             queryParams.append('index-url', url2);
         }
-        console.log(queryParams.toString())
         const mainContentUrl = `/?${queryParams.toString()}`;
         navigateTo(mainContentUrl);
     }
