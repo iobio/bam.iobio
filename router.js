@@ -1,13 +1,21 @@
 function navigateTo(url) {
     const currentPath = window.location.pathname;
     const currentQueryString = window.location.search;
-    
-    // Preserve query string
-    const newUrl = (url === '/' || url === '/help' || url === '/file-requirements' || url === '/license' || '/browser-compatibility') ? url : url + currentQueryString;
 
-    if (currentPath !== url || currentQueryString !== (newUrl.includes('?') ? newUrl.substring(newUrl.indexOf('?')) : '')) {
+    // Check if we're navigating to the home page
+    if (url === '/' && (currentPath !== '/' || currentQueryString !== '')) {
+        // Reload home page
+        window.location.href = '/';
+        return;
+    }
+
+    // Preserve query string
+    const newUrl = (url === '/help' || url === '/file-requirements' || url === '/license' || '/browser-compatibility') ? url : url + currentQueryString;
+    const newQueryString = newUrl.includes('?') ? newUrl.substring(newUrl.indexOf('?')) : '';
+
+    if (currentPath !== url || currentQueryString !== newQueryString) {
         // Update the browser's history stack
-        history.pushState(null, null, newUrl);
+        history.pushState({path: newUrl, isRouted: true}, null, newUrl);
         router();
     }
 }
@@ -55,9 +63,8 @@ function router() {
         licensePage.style.display = 'block';
     } else if (path === '/browser-compatibility') {
         compatibilityPage.style.display = 'block';
-    }
-    else {
-        // Default case: show home page
+    } else {
+        // Home page or default case
         homePage.style.display = 'block';
     }
 }
@@ -73,9 +80,18 @@ function initRouter() {
     });
 
     // Listen for popstate event to handle browser back and forward buttons
-    window.addEventListener('popstate', router);
+    window.addEventListener('popstate', (event) => {
+        if (window.location.pathname === '/' && (!event.state || !event.state.isRouted)) {
+            window.location.reload();
+        } else {
+            router();
+        }
+    });
 
     // Set up the initial page
+    if (window.location.pathname === '/') {
+        history.replaceState({path: '/', isRouted: false}, null, '/');
+    }
     router();
 }
 
