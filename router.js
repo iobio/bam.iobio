@@ -10,7 +10,7 @@ function navigateTo(url) {
     }
 
     // Preserve query string
-    const newUrl = (url === '/help' || url === '/file-requirements' || url === '/license' || '/browser-compatibility') ? url : url + currentQueryString;
+    const newUrl = (url === '/help' || url === '/file-requirements' || url === '/license' || url === '/browser-compatibility') ? url : url + currentQueryString;
     const newQueryString = newUrl.includes('?') ? newUrl.substring(newUrl.indexOf('?')) : '';
 
     if (currentPath !== url || currentQueryString !== newQueryString) {
