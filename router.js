@@ -3,7 +3,7 @@ function navigateTo(url) {
     const currentQueryString = window.location.search;
     
     // Preserve query string
-    const newUrl = (url === '/' || url === '/help' || url === '/file-requirements' || url === '/license' || '/browser-compatibility') ? url : url + currentQueryString;
+    const newUrl = (url === '/' || url === '/help' || url === '/file-requirements' || url === '/license' || url === '/browser-compatibility') ? url : url + currentQueryString;
 
     if (currentPath !== url || currentQueryString !== (newUrl.includes('?') ? newUrl.substring(newUrl.indexOf('?')) : '')) {
         // Update the browser's history stack
