@@ -166,6 +166,8 @@ class HomePage extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(homePageTemplate.content.cloneNode(true));
         this.initDOMElements();
+
+        this.currentAlignmentUrl = null;
     }
 
     initDOMElements() {
@@ -229,6 +231,16 @@ class HomePage extends HTMLElement {
 
     // Navigate to the main content page with the URLs
     navigateToMainContent(url1, url2) {
+        if (url1 !== this.currentAlignmentUrl) {
+            this.currentAlignmentUrl = url1;
+            this.dispatchEvent(new CustomEvent('alignment-data-request', 
+                { 
+                    bubbles: true, 
+                    composed: true 
+                }
+            ));
+        }
+
         const queryParams = new URLSearchParams({
             'alignment-url': url1,
         });
