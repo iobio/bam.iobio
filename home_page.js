@@ -233,7 +233,7 @@ class HomePage extends HTMLElement {
     navigateToMainContent(url1, url2) {
         if (url1 !== this.currentAlignmentUrl) {
             this.currentAlignmentUrl = url1;
-            this.dispatchEvent(new CustomEvent('alignment-data-request', 
+            this.dispatchEvent(new CustomEvent('toggle-loading-indicator-bamview', 
                 { 
                     bubbles: true, 
                     composed: true 
