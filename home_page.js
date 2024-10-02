@@ -1,4 +1,4 @@
-import { commonCss } from './lib/iobio-charts/common.js';
+import { commonCss, getDataBroker } from './lib/iobio-charts/common.js';
 import { navigateTo } from './router.js';
 import { URLInputModal } from './url_input_modal.js';
 import { LocalFileInputModal } from './local_file_input_modal.js'; 
@@ -180,6 +180,8 @@ class HomePage extends HTMLElement {
     }
 
     connectedCallback() {
+        this.broker = getDataBroker(this);
+
         this.localFileButton.addEventListener('click', () => this.localFileInputModal.showModal());
         // Handle the custom event from the local-file-input-modal
         this.localFileInputModal.addEventListener('local-file-loaded', async (event) => this.handleLocalFileLoaded(event));
@@ -233,12 +235,8 @@ class HomePage extends HTMLElement {
     navigateToMainContent(url1, url2) {
         if (url1 !== this.currentAlignmentUrl) {
             this.currentAlignmentUrl = url1;
-            this.dispatchEvent(new CustomEvent('toggle-loading-indicator-bamview', 
-                { 
-                    bubbles: true, 
-                    composed: true 
-                }
-            ));
+            // reset the state
+            this.broker.reset();
         }
 
         const queryParams = new URLSearchParams({
