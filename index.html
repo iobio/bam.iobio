@@ -371,15 +371,11 @@
       });
 
       document.addEventListener('bed-file-selected', (event) => {
-        console.log(event.detail)
+        broker.bedText = event.detail.bedText;
       });
 
       document.addEventListener('bed-file-removed', (event) => {
-        console.log(event.detail)
-      });
-
-      document.addEventListener('local-file-selected', (event) => {
-        console.log(event.detail)
+        broker.bedText = event.detail;
       });
     </script>
   </body>
