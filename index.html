@@ -348,7 +348,15 @@
         broker.bedUrl = bedUrl;
       }
 
+      const backendUrl = determineBackendUrl(); 
+      const readDepthComponent = document.querySelector('iobio-coverage-depth');
+      readDepthComponent.backendUrl = backendUrl;
 
+      function determineBackendUrl() {
+        // Determine backend URL dynamically
+        return 'https://backend.iobio.io'; // Default URL
+      }
+      
       function mosaicRequesterForProject(server, projectId, token) {
 
         async function request(path) {
