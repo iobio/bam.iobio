@@ -279,6 +279,7 @@
 
       import { parseBedFile } from './lib/iobio-charts/coverage/src/BamData.js';
       import { initRouter } from './router.js'
+      import { getDataBroker } from './lib/iobio-charts/common.js';
 
       initRouter()
 
@@ -356,7 +357,7 @@
         // Determine backend URL dynamically
         return 'https://backend.iobio.io'; // Default URL
       }
-      
+
       function mosaicRequesterForProject(server, projectId, token) {
 
         async function request(path) {
@@ -384,6 +385,21 @@
 
       document.addEventListener('bed-file-removed', (event) => {
         broker.bedText = event.detail;
+      });
+
+      const broker_ = getDataBroker(broker);
+      broker_.addEventListener('mapped-reads-from-index-file', (event) => {
+        // Determine the number of mapped reads and unmapped reads from the index file
+        if (event.detail.mappedReads && event.detail.unmappedReads) {
+          const val = event.detail.mappedReads;
+          const total = event.detail.mappedReads + event.detail.unmappedReads;
+          const data = [ val, total - val ];
+
+          const chart = document.querySelector('#mapped-reads-chart');
+          chart.update(data);
+          chart.style.setProperty('--iobio-data-color', 'rgb(9,176,135)');
+          chart.style.setProperty('--iobio-data-color-secondary', 'rgba(9,176,135,0.5)');
+        }
       });
     </script>
   </body>
