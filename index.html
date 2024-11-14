@@ -389,16 +389,18 @@
 
       const broker_ = getDataBroker(broker);
       broker_.addEventListener('mapped-reads-from-index-file', (event) => {
+        const chart = document.querySelector('#mapped-reads-chart');
         // Determine the number of mapped reads and unmapped reads from the index file
         if (event.detail.mappedReads && event.detail.unmappedReads) {
           const val = event.detail.mappedReads;
           const total = event.detail.mappedReads + event.detail.unmappedReads;
           const data = [ val, total - val ];
-
-          const chart = document.querySelector('#mapped-reads-chart');
           chart.update(data);
           chart.style.setProperty('--iobio-data-color', 'rgb(9,176,135)');
           chart.style.setProperty('--iobio-data-color-secondary', 'rgba(9,176,135,0.5)');
+        } else {
+          chart.style.setProperty('--iobio-data-color', '#2d8fc1');
+          chart.style.setProperty('--iobio-data-color-secondary', 'rgba(45,143,193,0.2)');
         }
       });
     </script>
