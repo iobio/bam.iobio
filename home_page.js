@@ -147,10 +147,14 @@ a {
 
 <div id="marth-lab-footer">
     <div class="logos">
-        <div id="marthlabtext">Marthlab</div>
-        <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/ustar-ucgd-logo.jpg" style="height:60px;" alt="USTAR UCGD Logo not found"/>
+        <a href="https://marthlab.org/"> 
+            <div id="marthlabtext">Marthlab</div>
+        </a>
+        <a href="https://ucgd.genetics.utah.edu/">
+            <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/ustar-ucgd-logo.jpg" style="height:60px;" alt="USTAR UCGD Logo not found"/>
+        </a>
         <a href="http://www.genetics.utah.edu/">
-        <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px" alt="Genetics Logo not found"/>
+            <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px" alt="Genetics Logo not found"/>
         </a>
     </div>
 </div>
