@@ -98,6 +98,22 @@
         align-items: center;
         justify-content: center;
       }
+
+      .inline-container {
+        display: flex;
+        align-items: center;
+      }
+
+      iobio-percent-box.percent-box {
+        margin-right: 30px;
+        flex-shrink: 0;    
+        width: 150px;
+        height: 150px;
+      }
+
+      span {
+        color: red;
+      }
     </style>
 
   </head>
@@ -131,7 +147,19 @@
           <iobio-panel>
             <iobio-label-info-button label="Mapped Reads">
               <div slot="content">
-                <p>This is custom content for the Mapped Reads percent box.</p>
+                <p>The mapped reads chart shows how many of the reads in the sample were successfully mapped to the reference genome. Genetic variation, in particular structural variants, ensure that every sequenced sample is genetically different to the reference genome it was aligned to. If the sample differs only in a small number of single base pair changes (e.g. SNVs), the read will still likely map to the reference, but, for more significant variation, the read can fail to be placed. Therefore, it is not expected that the mapped reads rate will hit 100%, but it is expected to be high (usually >90%).</p>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[88866,267]"></iobio-percent-box>
+                  <p>This is an example of a human, whole exome. In this case, 99.7% of the sampled reads map to the reference, corresponding to 88,666 actual reads. It is important to note that when the wheel is blue, only reads that have been assigned to a reference sequence are included. This means that the 0.3% of reads that are unmapped have a mate pair that successfully maps to the reference genome.</p>
+                </div>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[1108009142,8864073]" style="--data-color: rgb(9,176,135); --data-color-secondary: rgba(9,176,135,0.5);"></iobio-percent-box>
+                  <p>For the case that both mates from paired end sequencing are unmapped, they appear at the end of the BAM file. Usually, the number of such unmapped reads can be obtained from the index file. When this is possible, the wheel will appear in green, as shown for this whole genome sample.</p>
+                </div>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[479405211,141424537]" style="--data-color:  rgb(9,176,135); --data-color-secondary: rgba(9,176,135,0.5);"></iobio-percent-box>
+                  <p>If the rate of mapped reads is low (usually below 90%), questions need to be asked about the sample to understand why so many reads are unmapped. The last example only has 77.2% of reads mapping to the reference genome for a whole genome sample. This was caused as the sample was contaminated with a significant amount of bacterial DNA; the DNA sample was obtained from a saliva sample, rather than a blood draw.</p>
+                </div>
               </div>
             </iobio-label-info-button>
 
@@ -141,7 +169,7 @@
           <iobio-panel>
             <iobio-label-info-button label="Forward Strands">
               <div slot="content">
-                <p>This is custom content for the Forward Strands percent box.</p>
+                <p>The forward strand chart shows the fraction of reads that map to the forward DNA strand. The general expectation is that the DNA library preparation step will generate DNA from the forward and reverse strands in equal amounts. After mapping the reads to the reference genome, approximately 50% of the reads will consequently map to the forward strand. If the observed rate is significantly different to 50%, this may be indicative of problems with the library preparation step.</p>
               </div>
             </iobio-label-info-button>
 
@@ -151,7 +179,8 @@
           <iobio-panel>
             <iobio-label-info-button label="Proper Pairs">
               <div slot="content">
-                <p>This is custom content for the Proper Pairs percent box.</p>
+                <p>A fragment consisting of two mates is called a proper pair if both mates map to the reference genome in a manner consistent with expectations. In particular, if the DNA library consists of fragments ~500 base pairs in length, and 100 base pair reads are sequenced from either end, the expectation would be that the two reads map to the reference genome separated by ~300 base pairs. If the sequenced sample contains large structural variants, e.g. a large insertion, reads mapping with a large separation would be a signal for this variant, and the reads would not be proper pairs. Based on the sequencing technology, there is also an expectation on the orientation of each read in the fragment.</p>
+                <p>When calculating the proper pair rate, pairs where both mates are unmapped are not included in the analysis. As a consequence, the rate of proper pairs is expected to be well over 90%; even if the mapping rate itself is low as a result of bacterial contamination, for example.</p>
               </div>
             </iobio-label-info-button>
 
@@ -161,7 +190,7 @@
           <iobio-panel>
             <iobio-label-info-button label="Singletons">
               <div slot="content">
-                <p>This is custom content for the Singletons percent box.</p>
+                <p>When working with paired-end sequencing, each DNA fragment is sequenced from both ends, creating two mates for each pair. If one mate in the pair successfully maps to the reference genome, but the other is unmapped, the mapped mate is a singleton. One way in which a singleton could occur would be if the sample has a large insertion compared with the reference genome; one mate can fall in sequence flanking the insertion and will be mapped, but the other falls in the inserted sequence and so cannot map to the reference genome. There are unlikely to many such structural variants in the sample, or sequencing errors that would could cause a read to not be able to map. Consequently, the singleton rate is expected to be very low (<1%).</p>
               </div>
             </iobio-label-info-button>
 
@@ -171,7 +200,7 @@
           <iobio-panel>
             <iobio-label-info-button label="Both Mates Mapped">
               <div slot="content">
-                <p>This is custom content for the Both Mates Mapped percent box.</p>
+                <p>When working with paired-end sequencing, each DNA fragment is sequenced from both ends, creating two mates for each pair. This chart shows the fraction of reads in pairs where both of the mates successfully map to the reference genome. When calculating this metric, pairs where both mates are unmapped are not included..</p>
               </div>
             </iobio-label-info-button>
 
@@ -181,7 +210,19 @@
           <iobio-panel>
             <iobio-label-info-button label="Duplicates">
               <div slot="content">
-                <p>This is custom content for the Duplicates percent box.</p>
+                <p>PCR duplicates are two (or more) reads that originate from the same DNA fragment. When sequencing data is analysed, it is assumed that each observation (i.e. each read) is independent; an assumption that fails in the presence of duplicate reads. Typically, algorithms look for reads that map to the same genomic coordinate, and whose mates also map to identical genomic coordinates. It is important to note that as the sequencing depth increases, more reads are sampled from the DNA library, and consequently it is increasingly likely that duplicate reads will be sampled. As a result, the true duplicate rate is not independent of the depth, and they should both be considered when looking at the duplicate rate. Additionally, as the sequencing depth in increases, it is also increasingly likely that reads will map to the same location and be marked as duplicates, even when they are not. As such, as the sequencing depth approaches and surpasses the read length, the duplicate rate starts to become less indicative of problems.</p>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[2483,73425]"></iobio-percent-box>
+                  <p>This is an example of the duplicate rate for a ~80X human whole genome. The expectation is that the duplicate rate is low (well below 10%), and consequently, this sample would be considered good.</p>
+                </div>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[401,100651]"></iobio-percent-box>
+                  <p>If the median coverage drops to ~50X, the duplicate rate should be even lower.</p>
+                </div>
+                <div class="inline-container">
+                  <iobio-percent-box class="percent-box" data="[54960,401167]"></iobio-percent-box>
+                  <p>This is a different sample with ~50X coverage, but now the duplicate rate is much higher. This sample could well have problems at the library prep stage and should potentially be resequenced.</p>
+                </div>
               </div>
             </iobio-label-info-button>
 
@@ -194,7 +235,19 @@
           <iobio-panel>
             <iobio-label-info-button label="Read Coverage Distribution">
               <div slot="content">
-                <p>This is custom content for the Read Coverage Distribution histogram.</p>
+                <p>This chart shows how read coverage is distributed, and the expected distribution is dependent on the type of sequencing data being visualized.</p>
+
+                <p>In a <span>Whole Genome Sequencing</span> experiment, the expectation is that the read coverage follows a Poisson distribution centred about the requested sequencing depth. The following example shows a high quality read coverage distribution for a sample sequenced to ~50X coverage. The distribution shows a nice Poisson distribution, and is centred around ~53X. (Note that the second scale at the bottom of the chart can be used to zoom in on desired parts of the distribution).</p>
+                <iobio-histogram data-script-id="data-whole-genome"></iobio-histogram>
+
+                <p>Alternatively, if the distribution shows multiple peaks, isn't Poisson distributed, or is not centred around the expected coverage, it may be necessary to consider resequencing the sample, or at least, being aware that problems may arise in analysing the data. While the following distribution shows a median coverage around that expected (~80X), but with a significant portion of the genome at zero coverage and the multiple peaks, this would not be considered a good sample.</p>
+                <iobio-histogram data-script-id="data-whole-genome-with-multiple-peaks"></iobio-histogram>
+
+                <p><span>Whole Exome Sequencing</span> relies on the targetted capture of DNA from the exome, followed by DNA amplification. This leads to large variation in the sequencing depth across exons, and consequently, the read coverage distribution is no longer expected to be Poisson distributed. When sampling across the entire genome, the majority of genomic regions will contain no sequencing reads as will are not exonic regions. This leads to a read coverage distribution overwhelmingly weighted to zero coverage as shown below.</p>
+                <iobio-histogram data-script-id="data-exome"></iobio-histogram>
+
+                <p>To restrict sampling to exonic regions, select the default bed file in the top 'Exonic Regions'. It is also possible to select a custom bed file, if available. After selecting the default bed, the sequenced depth appears to be centred around ~50X, so if this is consistent with the requested depth, this sample would be considered good. The distribution above is updated to as shown below.</p>
+                <iobio-histogram data-script-id="data-exome-with-bed"></iobio-histogram>
               </div>
             </iobio-label-info-button>
 
@@ -206,7 +259,13 @@
               <iobio-tab slot="tab">
                 <iobio-label-info-button label="Fragment Length" icon-position="left" slot="tab-content">
                   <div slot="content">
-                    <p>This is custom content for the Fragment Length histogram.</p>
+                    <p>For paired end sequencing, DNA fragments are typically size selected to a uniform length and then sequenced from either end. Once the two mates are aligned back to the reference genome, the fragment length can be inferred from how far apart these two mates map. If the sequenced sample has a deletion or insertion relative to the reference, this will result in the two mates mapping closer together, or further apart than expected. Under the assumption that the sequenced sample has a relatively small number of insertions and deletions, we expect to see the fragment length follow a normal distribution.</p>
+
+                    <p><span>Whole genome sequencing</span>, this is an example of the fragment length distribution for a high coverage (~80X) whole genome. The read lengths in this sample are 150bp, so a fragment can not be shorter than this value, consequently, we see a sharp cutoff at a fragment length of 150bp.</p>
+                    <iobio-histogram data-script-id="data-whole-genome-fragment-length"></iobio-histogram>
+                    
+                    <p><span>Whole exome sequencing</span>, this is the fragment length distribution for a high coverage exome.</p>
+                    <iobio-histogram data-script-id="data-exome-fragment-length"></iobio-histogram>
                   </div>
                 </iobio-label-info-button>
               </iobio-tab>
@@ -218,7 +277,7 @@
               <iobio-tab slot="tab">
                 <iobio-label-info-button label="Read Length" slot="tab-content">
                   <div slot="content">
-                    <p>This is custom content for the Read Length histogram.</p>
+                    <p>The read length is usually a very simple distribution. In most cases, the read length is fixed at a uniform length, e.g. 100 base pairs, or 150 base pairs etc. The read length distribution, therefore, tends to be a single spike at this read length. Depending on the sequencing technology used, this may not always be the case.</p>
                   </div>
                 </iobio-label-info-button>
               </iobio-tab>
@@ -233,7 +292,7 @@
               <iobio-tab slot="tab">
                 <iobio-label-info-button label="Mapping Quality" icon-position="left" slot="tab-content">
                   <div slot="content">
-                    <p>This is custom content for the Mapping Quality histogram.</p>
+                    <p>The mapping quality distribution shows the Phred quality scores describing the probability that a read does not map to the location that it has been assigned to (specifically, Q=-log10(P), where Q is the Phred score and P is the probability the read is in the wrong location). So the larger the score, the higher the quality of the mapping. Some scores have specific meaning, e.g. a score of 0 means that the read could map equally to multiple places in the reference genome. The majority of reads should be well mapped and so we expect to see this distribution heavily skewed to large value (typically around 60). It is not unusual to see some scores around zero. Reads originating from repetitive elements in the genome will plausibly map to multiple locations.</p>
                   </div>
                 </iobio-label-info-button>
               </iobio-tab> 
@@ -245,7 +304,7 @@
               <iobio-tab slot="tab">
                 <iobio-label-info-button label="Base Quality" slot="tab-content">
                   <div slot="content">
-                    <p>This is custom content for the Base Quality histogram.</p>
+                    <p>Similar to the mapping quality distribution, the base quality distribution shows the Phred quality scores describing the probability that a nucleotide has been incorrectly assigned; e.g. an error in the sequencing. Specifically, Q=-log10(P), where Q is the Phred score and P is the probability the nucleotide is wrong. The larger the score, the more confident we are in the base call. Depending on the sequencing technology, we can expect to see different distributions, but we expect to see a distribution skewed towards larger (more confident) scores; typically around 40.</p>
                   </div>
                 </iobio-label-info-button>
               </iobio-tab>
@@ -274,6 +333,232 @@
     <script type= 'module' src="./license_page.js"></script>
     <script type= 'module' src="./compatibility_page.js"></script>
     <script type= 'module' src="./help_page.js"></script>
+
+    <script id="data-whole-genome" type="application/json">
+      [
+        [0, 0.000477915842354458], [1, 0.00002778580478804988], [2, 0.00010558605819458954],
+        [3, 0.00006112877053370974], [4, 0.000038900126703269835], [5, 0.00008891457532175962],
+        [6, 0.00004445728766087981], [7, 0.000033342965745659854], [8, 0.00012225754106741948],
+        [9, 0.0001389290239402494], [10, 0.00038900126703269835], [11, 0.00013337186298263942],
+        [12, 0.00008891457532175962], [13, 0.00015560050681307934], [14, 0.0003278724964989886],
+        [15, 0.0003389868184142085], [16, 0.0008335741436414964], [17, 0.00035565830128703847],
+        [18, 0.0008113454998110566], [19, 0.0009169315580056461], [20, 0.0014504190099362039],
+        [21, 0.0019505634961211017], [22, 0.00226732167070487], [23, 0.0022117500611287706],
+        [24, 0.0027396803521017184], [25, 0.003284282125947496], [26, 0.0038455553826661037],
+        [27, 0.0043012425811901215], [28, 0.003928912797030253], [29, 0.0046235579167315],
+        [30, 0.005640518371974126], [31, 0.005557160957609976], [32, 0.006162891501989463],
+        [33, 0.006701936114877631], [34, 0.00699090848467335], [35, 0.008463556138439994],
+        [36, 0.00934714473069998], [37, 0.010691977682441595], [38, 0.012914842065485585],
+        [39, 0.014520861582234867], [40, 0.016171338386645032], [41, 0.01857758908129015],
+        [42, 0.023623491230800008], [43, 0.027018916575899703], [44, 0.029436281592460044],
+        [45, 0.03080890034898971], [46, 0.033631938115455576], [47, 0.03617156067308334],
+        [48, 0.03846666814857626], [49, 0.038477782470491474], [50, 0.040795118589814834],
+        [51, 0.03987818703180919], [52, 0.04026718829884189], [53, 0.04047836041523107],
+        [54, 0.040389445839909305], [55, 0.03980038677840265], [56, 0.03854446840198279],
+        [57, 0.03607708893680397], [58, 0.03258163469446729], [59, 0.03084780047569298],
+        [60, 0.0274079178429324], [61, 0.02324004712472492], [62, 0.022128614933202926],
+        [63, 0.019105519372263097], [64, 0.017060484139862626], [65, 0.015410007335452464],
+        [66, 0.012842598973036655], [67, 0.011331051192566742], [68, 0.00938048769644564],
+        [69, 0.008508013426100873], [70, 0.0076133105119256675], [71, 0.006057305443794874],
+        [72, 0.004951430413230489], [73, 0.0039511414408606935], [74, 0.0028730522150843575],
+        [75, 0.0021728499344255007], [76, 0.0020672638762309114], [77, 0.001400404561317714],
+        [78, 0.001155889479182875], [79, 0.0007446595683197368], [80, 0.0005557160957609976],
+        [81, 0.0004112299108631382], [82, 0.00025007224309244895], [83, 0.000238957921177229],
+        [84, 0.00022228643830439905], [85, 0.00011114321915219952], [86, 0.00006112877053370974],
+        [87, 0.0000944717362793696], [88, 0.00006668593149131971], [89, 0.0000944717362793696],
+        [90, 0.00005557160957609976], [91, 0.00013337186298263942], [92, 0.000022228643830439904],
+        [93, 0.00004445728766087981], [94, 0.00007780025340653967], [95, 0.00008335741436414965],
+        [96, 0.00010558605819458954], [97, 0.00011114321915219952], [98, 0.00012225754106741948],
+        [99, 0.00017227198968590925], [100, 0.00017227198968590925], [101, 0.0001667148287282993],
+        [102, 0.00012225754106741948], [103, 0.00017782915064351923], [104, 0.00021672927734678907],
+        [105, 0.00015004334585546936], [106, 0.00022784359926200903], [107, 0.00015560050681307934],
+        [108, 0.00017227198968590925], [109, 0.0001667148287282993], [110, 0.00020005779447395915],
+        [111, 0.0000944717362793696], [112, 0.00006112877053370974], [113, 0.00008335741436414965],
+        [114, 0.00004445728766087981], [115, 0.00004445728766087981], [116, 0.000016671482872829927],
+        [117, 0.00004445728766087981], [118, 0.000016671482872829927], [119, 0.00002778580478804988],
+        [120, 0.000005557160957609976], [121, 0.00002778580478804988], [122, 0.000022228643830439904],
+        [123, 0.000011114321915219952], [124, 0.000005557160957609976]
+      ]
+    </script>
+
+    <script id="data-whole-genome-with-multiple-peaks" type="application/json">
+      [
+        [0, 0.15], [1, 0.002], [2, 0.002], [3, 0.0018], [4, 0.0016], [5, 0.0014], [6, 0.0012], [7, 0.001], [8, 0.0009],
+        [9, 0.0008], [10, 0.0007],
+        [10, 0.001], [11, 0.002], [12, 0.003], [13, 0.005], [14, 0.007], [15, 0.009], [16, 0.012], [17, 0.015],
+        [18, 0.02], [19, 0.03], [20, 0.035], [21, 0.03], [22, 0.025], [23, 0.02], [24, 0.015], [25, 0.012],
+        [26, 0.009], [27, 0.007], [28, 0.005], [29, 0.003], [30, 0.002],[30, 0.002], [31, 0.003], [32, 0.005], 
+        [33, 0.008], [34, 0.012], [35, 0.018], [36, 0.025], [37, 0.03],[38, 0.04], [39, 0.045], [40, 0.05], 
+        [41, 0.045], [42, 0.04], [43, 0.03], [44, 0.025], [45, 0.018],[46, 0.012], [47, 0.008], [48, 0.005], 
+        [49, 0.003], [50, 0.002],[50, 0.001], [51, 0.002], [52, 0.003], [53, 0.005], [54, 0.008], [55, 0.012], 
+        [56, 0.02], [57, 0.03],[58, 0.04], [59, 0.05], [60, 0.06], [61, 0.07], [62, 0.08], [63, 0.09], [64, 0.1], [65, 0.11],
+        [66, 0.115], [67, 0.12], [68, 0.125], [69, 0.13], [70, 0.135], [71, 0.14], [72, 0.145], [73, 0.15],
+        [74, 0.155], [75, 0.16], [76, 0.165], [77, 0.17], [78, 0.175], [79, 0.18], [80, 0.185], [81, 0.18],
+        [82, 0.175], [83, 0.17], [84, 0.165], [85, 0.16], [86, 0.155], [87, 0.15], [88, 0.145], [89, 0.14],
+        [90, 0.135], [91, 0.13], [92, 0.125], [93, 0.12], [94, 0.115], [95, 0.11], [96, 0.1], [97, 0.09],
+        [98, 0.08], [99, 0.07], [100, 0.06], [101, 0.05], [102, 0.04], [103, 0.03], [104, 0.02], [105, 0.015],
+        [106, 0.01], [107, 0.008], [108, 0.005], [109, 0.003], [110, 0.002], [111, 0.0015], [112, 0.0012],
+        [113, 0.001], [114, 0.0008], [115, 0.0007], [116, 0.0006], [117, 0.0005], [118, 0.0004], [119, 0.0003],
+        [120, 0.0002]
+      ]
+    </script>
+
+    <script id="data-exome" type="application/json">
+      [
+        [0, 0.9045509061833689], [1, 0.00056636460554371], [2, 0.0006663113006396588],
+        [3, 0.0009994669509594883], [4, 0.000599680170575693], [5, 0.0006996268656716418],
+        [6, 0.0010327825159914712], [7, 0.0003664712153518124], [8, 0.0005330490405117271],
+        [9, 0.0008662046908315565], [10, 0.0004664179104477612], [11, 0.00043310234541577827],
+        [12, 0.00056636460554371], [13, 0.0003997867803837953], [14, 0.0005330490405117271],
+        [15, 0.0009328358208955224], [16, 0.0004664179104477612], [17, 0.0003997867803837953],
+        [18, 0.0007995735607675906], [19, 0.0004997334754797442], [20, 0.0007995735607675906],
+        [21, 0.00113272921108742], [22, 0.0007662579957356077], [23, 0.0006329957356076759],
+        [24, 0.00056636460554371], [25, 0.0003331556503198294], [26, 0.0006663113006396588],
+        [27, 0.0008995202558635395], [28, 0.0003997867803837953], [29, 0.0010660980810234541],
+        [30, 0.00056636460554371], [31, 0.0004997334754797442], [32, 0.00043310234541577827],
+        [33, 0.0008328891257995735], [34, 0.0003997867803837953], [35, 0.0009994669509594883],
+        [36, 0.0008662046908315565], [37, 0.0009328358208955224], [38, 0.0013992537313432835],
+        [39, 0.0020655650319829424], [40, 0.0026652452025586353], [41, 0.0031982942430703624],
+        [42, 0.002998400852878465], [43, 0.0034315031982942432], [44, 0.003498134328358209],
+        [45, 0.00396455223880597], [46, 0.002965085287846482], [47, 0.002931769722814499],
+        [48, 0.0036980277185501066], [49, 0.0021321961620469083], [50, 0.0019323027718550106],
+        [51, 0.001765724946695096], [52, 0.0015991471215351812], [53, 0.0016324626865671641],
+        [54, 0.0012659914712153518], [55, 0.0016990938166311302], [56, 0.002232142857142857],
+        [57, 0.00226545842217484], [58, 0.0019323027718550106], [59, 0.002398720682302772],
+        [60, 0.001799040511727079], [61, 0.001099413646055437], [62, 0.0016324626865671641],
+        [63, 0.0021321961620469083], [64, 0.0018323560767590618], [65, 0.002398720682302772],
+        [66, 0.0019323027718550106], [67, 0.001665778251599147], [68, 0.00056636460554371],
+        [69, 0.0003997867803837953], [70, 0.0003331556503198294], [71, 0.0002332089552238806],
+        [72, 0.00026652452025586353], [73, 0.000599680170575693], [74, 0.00019989339019189765],
+        [75, 0.00006663113006396588]
+      ]
+    </script>
+
+    <script id="data-exome-with-bed" type="application/json">
+      [
+        [1, 0.00007511003620303745], [2, 0.000055080693215560795], [3, 0.00014521273665920573],
+        [4, 0.00011016138643112159], [5, 0.0002053007656216357], [6, 0.00008011737194990662],
+        [7, 0.00008512470769677578], [8, 0.00010014671493738326], [9, 0.00010515405068425243],
+        [10, 0.00006509536470929912], [11, 0.000035051350228084144], [12, 0.000055080693215560795],
+        [13, 0.00014521273665920573], [14, 0.00008512470769677578], [15, 0.000055080693215560795],
+        [16, 0.0000951393791905141], [17, 0.00008512470769677578], [18, 0.00013019072941859825],
+        [19, 0.00017525675114042071], [20, 0.00024035211584971984], [21, 0.000305447480559019],
+        [22, 0.000305447480559019], [23, 0.00033549149504023395], [24, 0.00044064554572448636],
+        [25, 0.0005558142679024772], [26, 0.0006459463113461221], [27, 0.0011316578787924309],
+        [28, 0.0011817312362611225], [29, 0.0013770173303890199], [30, 0.0015522740815294407],
+        [31, 0.0019829049557601886], [32, 0.0028992473974372456], [33, 0.004216176698863835],
+        [34, 0.005312783227428182], [35, 0.006589653842879819], [36, 0.008417331390487063],
+        [37, 0.010890955249440431], [38, 0.012713625461300806], [39, 0.015392550085875808],
+        [40, 0.017921254638044736], [41, 0.021256140245459597], [42, 0.02477128993976175],
+        [43, 0.02859689445036979], [44, 0.030574792070383112], [45, 0.03456063132489096],
+        [46, 0.03670877836029784], [47, 0.038866940067198444], [48, 0.04156589403476092],
+        [49, 0.043348505560646344], [50, 0.04202656892347289], [51, 0.04304305808008733],
+        [52, 0.04425483333082966], [53, 0.04235705308276625], [54, 0.04303304340859359],
+        [55, 0.042442177790463026], [56, 0.03883188871697036], [57, 0.03758005478025307],
+        [58, 0.034610704682359654], [59, 0.03271793177004311], [60, 0.028586879778876053],
+        [61, 0.02490148066918035], [62, 0.021611661083487308], [63, 0.019518594741295997],
+        [64, 0.01663937668684623], [65, 0.014341009579033283], [66, 0.012002583785245385],
+        [67, 0.010009664157991458], [68, 0.008587580805880615], [69, 0.007626172342481735],
+        [70, 0.006264177019333323], [71, 0.0051275118047940235], [72, 0.003895707211064209],
+        [73, 0.0034450469938459845], [74, 0.0028942400616903765], [75, 0.002488645866193974],
+        [76, 0.002012948970241404], [77, 0.001562288753023179], [78, 0.0012968999584391132],
+        [79, 0.00131692930142659], [80, 0.0011516872217799076], [81, 0.000981437806386356],
+        [82, 0.0009714231348926177], [83, 0.0007561076977772436], [84, 0.0005658289393962154],
+        [85, 0.0003955795240026639], [86, 0.0004256235384838789], [87, 0.00032046948779962647],
+        [88, 0.00020029342987476652], [89, 0.00016023474389981323], [90, 0.00009013204344364495],
+        [91, 0.0002053007656216357], [92, 0.00016023474389981323], [93, 0.000245359451596589],
+        [94, 0.00029042547331841145], [95, 0.0002503667873434582], [96, 0.0002053007656216357],
+        [97, 0.00021531543711537403], [98, 0.00029543280906528063], [99, 0.0001502200724060749],
+        [100, 0.000055080693215560795], [101, 0.000055080693215560795], [102, 0.00007511003620303745],
+        [103, 0.000025036678734345815], [104, 0.000025036678734345815], [106, 0.0000050073357468691636],
+        [107, 0.0000050073357468691636], [108, 0.000020029342987476654], [109, 0.000010014671493738327],
+        [110, 0.000020029342987476654], [111, 0.00001502200724060749], [112, 0.0000050073357468691636],
+        [114, 0.00001502200724060749], [115, 0.0000050073357468691636], [116, 0.0000050073357468691636],
+        [117, 0.000010014671493738327], [118, 0.0000050073357468691636], [119, 0.000010014671493738327],
+        [121, 0.000020029342987476654], [122, 0.0000050073357468691636]
+      ]
+    </script>
+
+    <script id="data-whole-genome-fragment-length" type="application/json">
+      [
+        [1, 27], [18, 1], [29, 1], [34, 1], [36, 1], [63, 1], [67, 1], [85, 1], [90, 2], [91, 2], [96, 1], [102, 11],
+        [103, 13], [104, 5], [105, 9], [106, 6], [107, 13], [108, 9], [109, 10], [110, 6], [111, 11], [112, 6], [113, 10],
+        [114, 9], [115, 12], [116, 13], [117, 9], [118, 11], [119, 13], [120, 10], [121, 12], [122, 8], [123, 17], [124, 17],
+        [125, 17], [126, 12], [127, 22], [128, 17], [129, 17], [130, 17], [131, 20], [132, 18], [133, 19], [134, 14],
+        [135, 22], [136, 14], [137, 18], [138, 15], [139, 22], [140, 19], [141, 22], [142, 17], [143, 25], [144, 18],
+        [145, 21], [146, 18], [147, 15], [148, 18], [149, 21], [150, 22], [151, 20], [152, 29], [153, 21], [154, 10],
+        [155, 20], [156, 12], [157, 25], [158, 22], [159, 20], [160, 19], [161, 26], [162, 20], [163, 33], [164, 32],
+        [165, 23], [166, 24], [167, 25], [168, 39], [169, 23], [170, 26], [171, 33], [172, 26], [173, 29], [174, 33],
+        [175, 39], [176, 30], [177, 34], [178, 35], [179, 43], [180, 34], [181, 43], [182, 34], [183, 33], [184, 41],
+        [185, 29], [186, 35], [187, 44], [188, 40], [189, 48], [190, 42], [191, 41], [192, 39], [193, 45], [194, 52],
+        [195, 58], [196, 56], [197, 52], [198, 47], [199, 38], [200, 53], [201, 44], [202, 73], [203, 50], [204, 68],
+        [205, 57], [206, 59], [207, 77], [208, 66], [209, 57], [210, 53], [211, 70], [212, 67], [213, 74], [214, 67],
+        [215, 69], [216, 90], [217, 66], [218, 76], [219, 92], [220, 81], [221, 87], [222, 90], [223, 82], [224, 81],
+        [225, 102], [226, 77], [227, 87], [228, 102], [229, 96], [230, 103], [231, 97], [232, 116], [233, 104],
+        [234, 96], [235, 119], [236, 118], [237, 116], [238, 118], [239, 99], [240, 133], [241, 131], [242, 141],
+        [243, 134], [244, 106], [245, 137], [246, 137], [247, 140], [248, 164], [249, 153], [250, 167], [251, 158],
+        [252, 170], [253, 156], [254, 170], [255, 159], [256, 176], [257, 182], [258, 152], [259, 208], [260, 171],
+        [261, 185], [262, 200], [263, 201], [264, 198], [265, 187], [266, 205], [267, 193], [268, 211], [269, 200],
+        [270, 217], [271, 199], [272, 227], [273, 241], [274, 211], [275, 218], [276, 219], [277, 209], [278, 220],
+        [279, 231], [280, 270], [281, 236], [282, 254], [283, 255], [284, 249], [285, 277], [286, 266], [287, 279],
+        [288, 260], [289, 256], [290, 290], [291, 283], [292, 269], [293, 285], [294, 250], [295, 288], [296, 312],
+        [297, 313], [298, 294], [299, 310], [300, 277], [301, 290], [302, 319], [303, 279], [304, 286], [305, 292],
+        [306, 296], [307, 304], [308, 281], [309, 295], [310, 323], [311, 321], [312, 330], [313, 318], [314, 320],
+        [315, 282], [316, 305], [317, 342], [318, 297], [319, 305], [320, 325], [321, 301], [322, 311], [323, 311],
+        [324, 318], [325, 284], [326, 307], [327, 295], [328, 310], [329, 292], [330, 306], [331, 295], [332, 280],
+        [333, 303], [334, 301], [335, 291], [336, 278], [337, 273], [338, 314], [339, 295], [340, 268], [341, 296],
+        [342, 282], [343, 258], [344, 271], [345, 275], [346, 254], [347, 271], [348, 265], [349, 261], [350, 277],
+        [351, 291], [352, 270], [353, 248], [354, 258], [355, 260], [356, 215], [357, 258], [358, 264], [359, 223],
+        [360, 253], [361, 242], [362, 200], [363, 225], [364, 248], [365, 213], [366, 210], [367, 221], [368, 206],
+        [369, 200], [370, 218], [371, 203], [372, 204], [373, 229], [374, 219], [375, 210], [376, 204], [377, 171],
+        [378, 198], [379, 182], [380, 179], [381, 178], [382, 173], [383, 163], [384, 180], [385, 187], [386, 139],
+        [387, 172], [388, 152], [389, 167], [390, 142], [391, 146], [392, 140], [393, 157], [394, 139], [395, 148],
+        [396, 130], [397, 128], [398, 118], [399, 123], [400, 150], [401, 128], [402, 127], [403, 120], [404, 100],
+        [405, 96], [406, 115], [407, 95], [408, 101], [409, 90], [410, 122], [411, 106], [412, 103], [413, 101],
+        [414, 103], [415, 106], [416, 90], [417, 113], [418, 92], [419, 76], [420, 67], [421, 83], [422, 91], [423, 67],
+        [424, 81], [425, 63], [426, 77], [427, 68], [428, 83], [429, 61], [430, 69], [431, 54], [432, 73], [433, 58],
+        [434, 82], [435, 62], [436, 56], [437, 47], [438, 63], [439, 53], [440, 49], [441, 42], [442, 57], [443, 43],
+        [444, 58], [445, 48], [446, 47], [447, 49], [448, 45], [449, 57], [450, 50], [451, 54], [452, 36], [453, 38],
+        [454, 49], [455, 31], [456, 44], [457, 41], [458, 39], [459, 38], [460, 38], [461, 35], [462, 29], [463, 36],
+        [464, 25], [465, 31], [466, 29], [467, 24], [468, 35], [469, 21], [470, 31], [471, 32], [472, 23], [473, 27],
+        [474, 23], [475, 25], [476, 32], [477, 14], [478, 21], [479, 20], [480, 17], [481, 18], [482, 21], [483, 22],
+        [484, 14], [485, 13], [486, 16], [487, 20], [488, 14], [489, 12], [490, 21], [491, 14], [492, 16], [493, 8],
+        [494, 19]
+      ]
+    </script>
+
+    <script id="data-exome-fragment-length" type="application/json">
+      [
+        [130, 1], [131, 2], [133, 2], [136, 1], [141, 2], [143, 1], [144, 3], [147, 2], [150, 1], [151, 1], [153, 1],
+        [162, 1], [163, 1], [164, 1], [165, 1], [166, 1], [168, 1], [169, 1], [170, 1], [175, 1], [176, 1], [180, 1],
+        [181, 2], [182, 1], [183, 1], [186, 1], [187, 1], [191, 1], [192, 1], [193, 2], [195, 3], [196, 1], [197, 1],
+        [200, 1], [202, 1], [204, 2], [206, 1], [207, 1], [208, 3], [209, 1], [210, 2], [212, 1], [213, 1], [214, 1],
+        [215, 1], [216, 1], [217, 2], [218, 2], [219, 1], [220, 1], [221, 2], [222, 4], [224, 1], [226, 3], [227, 3],
+        [229, 1], [230, 2], [231, 2], [232, 3], [233, 1], [234, 3], [235, 2], [236, 2], [237, 4], [238, 3], [240, 5],
+        [241, 1], [242, 3], [243, 3], [244, 4], [245, 3], [246, 1], [247, 2], [248, 4], [249, 2], [250, 2], [251, 3],
+        [252, 2], [253, 3], [254, 7], [255, 5], [256, 4], [257, 5], [258, 1], [259, 4], [260, 3], [261, 4], [262, 3],
+        [263, 3], [264, 5], [265, 5], [266, 3], [267, 7], [268, 1], [269, 3], [270, 7], [271, 5], [272, 3], [273, 5],
+        [274, 1], [275, 2], [276, 5], [277, 4], [278, 3], [279, 6], [280, 5], [281, 3], [282, 6], [283, 6], [284, 6],
+        [285, 10], [286, 7], [287, 4], [288, 1], [289, 6], [290, 3], [291, 6], [292, 6], [293, 9], [294, 3], [295, 5],
+        [296, 2], [297, 5], [298, 7], [299, 8], [300, 6], [301, 6], [302, 3], [303, 14], [304, 10], [305, 5], [306, 4],
+        [307, 7], [308, 11], [309, 5], [310, 10], [311, 7], [312, 9], [313, 12], [314, 5], [315, 9], [316, 1], [317, 14],
+        [318, 2], [319, 6], [320, 11], [321, 5], [322, 7], [323, 4], [324, 9], [325, 6], [326, 5], [327, 9], [328, 6],
+        [329, 6], [330, 10], [331, 1], [332, 6], [333, 6], [334, 8], [335, 3], [336, 9], [337, 6], [338, 7], [339, 3],
+        [340, 7], [341, 3], [342, 6], [343, 12], [344, 5], [345, 3], [346, 12], [347, 9], [348, 6], [349, 7], [350, 9],
+        [351, 6], [352, 5], [353, 5], [354, 8], [355, 6], [356, 7], [357, 6], [358, 5], [359, 8], [360, 6], [361, 3],
+        [362, 3], [363, 4], [364, 2], [365, 6], [366, 7], [367, 4], [368, 10], [369, 6], [370, 4], [371, 4], [372, 9],
+        [373, 5], [374, 2], [375, 3], [376, 7], [377, 5], [378, 7], [379, 8], [380, 4], [381, 2], [382, 2], [383, 10],
+        [384, 1], [385, 1], [386, 6], [387, 7], [388, 1], [389, 2], [390, 5], [391, 3], [392, 2], [393, 3], [395, 1],
+        [396, 1], [398, 3], [399, 4], [400, 1], [401, 4], [402, 4], [403, 3], [404, 2], [405, 3], [406, 4], [407, 3],
+        [408, 3], [409, 5], [410, 3], [411, 4], [412, 2], [413, 2], [414, 2], [415, 3], [416, 1], [417, 1], [418, 2],
+        [420, 5], [421, 1], [422, 5], [424, 1], [425, 1], [427, 2], [428, 3], [429, 4], [430, 1], [431, 2], [432, 3],
+        [433, 2], [436, 1], [437, 3], [438, 2], [439, 1], [440, 1], [441, 2], [442, 2], [443, 2], [445, 3], [446, 1],
+        [447, 1], [448, 1], [450, 1], [451, 2], [452, 1], [454, 2], [456, 1], [458, 2], [462, 2], [464, 1], [465, 1],
+        [466, 1], [467, 1], [468, 1], [471, 3], [472, 2], [473, 1], [474, 1], [476, 2], [477, 2], [479, 1], [481, 1],
+        [484, 1], [485, 2], [488, 1], [492, 3], [493, 2], [495, 1], [499, 1], [502, 1], [504, 1], [507, 1], [513, 1],
+        [515, 1], [516, 2], [520, 1], [533, 1], [536, 1], [537, 1], [561, 1], [702, 1], [-99, 1], [-98, 1]
+      ]
+    </script>
 
     <script type='module'>
 
