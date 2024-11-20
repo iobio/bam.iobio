@@ -71,7 +71,7 @@ ${commonCss}
     
 #info li {
     display: inline;
-    margin-right: 50px;
+    margin-right: 25px;
     cursor: pointer;
     color: var(--data-color);
 }
@@ -109,7 +109,6 @@ a {
     left: 100px;
     top: 4px;
     font-size: 50px;
-    font-family:'Overlock SC', cursive;
 }
 </style>
 
@@ -138,7 +137,6 @@ a {
             <li><a href="http://www.nature.com/nmeth/journal/v11/n12/full/nmeth.3174.html">Publication</a></li>
             <li><span id="file-requirements-button" data-link="/file-requirements">File Requirements</span></li>
             <li><span data-link="/license">License</span></li>
-            <li><span data-link="/browser-compatibility">Compatible Browsers</span></li>
         </ul>
     </div>
 
@@ -150,9 +148,9 @@ a {
 <div id="marth-lab-footer">
     <div class="logos">
         <div id="marthlabtext">Marthlab</div>
-        <img src="/images/ustar-ucgd-logo.jpg" style="height:60px;" alt="USTAR UCGD Logo not found"/>
+        <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/ustar-ucgd-logo.jpg" style="height:60px;" alt="USTAR UCGD Logo not found"/>
         <a href="http://www.genetics.utah.edu/">
-        <img src="/images/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px" alt="Genetics Logo not found"/>
+        <img src="https://s3.us-east-1.amazonaws.com/static.iobio.io/prod/bam.iobio.io/bam2.0/genetics_mainlogo3_lrg.png" style="height:50px;position:absolute;right:0px;top:7px" alt="Genetics Logo not found"/>
         </a>
     </div>
 </div>
