@@ -109,6 +109,7 @@ a {
     left: 100px;
     top: 4px;
     font-size: 50px;
+    color: rgb(80, 80, 80);
 }
 </style>
 
