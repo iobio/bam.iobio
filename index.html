@@ -401,6 +401,10 @@
           chart.style.setProperty('--iobio-data-color-secondary', 'rgba(9,176,135,0.5)');
         }
       });
+
+      document.addEventListener('sample-more-reads', () => {
+        broker_.updateStats(true);
+      });
     </script>
   </body>
 
