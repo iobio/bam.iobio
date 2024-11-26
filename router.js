@@ -3,7 +3,7 @@ function navigateTo(url) {
     const currentQueryString = window.location.search;
     
     // Preserve query string
-    const newUrl = (url === '/' || url === '/help' || url === '/file-requirements' || url === '/license' || url === '/browser-compatibility') ? url : url + currentQueryString;
+    const newUrl = (url === '/' || url === '/help' || url === '/file-requirements' || url === '/license') ? url : url + currentQueryString;
 
     if (currentPath !== url || currentQueryString !== (newUrl.includes('?') ? newUrl.substring(newUrl.indexOf('?')) : '')) {
         // Update the browser's history stack
@@ -22,7 +22,6 @@ function router() {
     const mainContent = document.getElementById('main-content');
     const fileRequirementPage = document.getElementById('file-requirements-page');
     const licensePage = document.getElementById('license-page');
-    const compatibilityPage = document.getElementById('compatible-browsers-page');
 
     mainContent.style.position = 'absolute'; // Move it out of view
     mainContent.style.top = '-9999px';
@@ -33,7 +32,6 @@ function router() {
     mainContent.style.visibility = 'hidden';
     fileRequirementPage.style.display = 'none';
     licensePage.style.display = 'none';
-    compatibilityPage.style.display = 'none';
 
     if (path === '/help') {
         helpPage.style.display = 'block';
@@ -53,10 +51,7 @@ function router() {
         fileRequirementPage.style.display = 'block';
     } else if (path === '/license') {
         licensePage.style.display = 'block';
-    } else if (path === '/browser-compatibility') {
-        compatibilityPage.style.display = 'block';
-    }
-    else {
+    } else {
         // Default case: show home page
         homePage.style.display = 'block';
     }
