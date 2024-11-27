@@ -444,6 +444,12 @@
         broker.bedText = event.detail;
       });
 
+      document.addEventListener('sample-more-reads', (event) => {
+        console.log('sample-more-reads', event.detail.samplingMultiplier);
+        broker.samplingMultiplier = event.detail.samplingMultiplier;
+        
+      });
+
       const broker_ = getDataBroker(broker);
       broker_.addEventListener('mapped-reads-from-index-file', (event) => {
         const chart = document.querySelector('#mapped-reads-chart');
@@ -459,10 +465,6 @@
           chart.style.setProperty('--iobio-data-color', 'unset');
           chart.style.setProperty('--iobio-data-color-secondary', 'unset');
         }
-      });
-
-      document.addEventListener('sample-more-reads', () => {
-        broker_.updateStats(true);
       });
     </script>
   </body>
