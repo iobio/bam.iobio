@@ -130,7 +130,6 @@
     <iobio-home-page class="route" id="home-page"></iobio-home-page>
     <iobio-file-requirements-page class="route" id="file-requirements-page"></iobio-file-requirements-page>
     <iobio-license-page class="route" id="license-page"></iobio-license-page>
-    <iobio-compatible-browsers-page class="route" id="compatible-browsers-page"></iobio-compatible-browsers-page>
 
     <main id="main-content">
       <iobio-bam-controls></iobio-bam-controls>
@@ -251,7 +250,7 @@
               </div>
             </iobio-label-info-button>
 
-            <iobio-histogram broker-key="coverage_hist"></iobio-histogram>
+            <iobio-histogram broker-key="coverage_hist" id="read-coverage-histogram"></iobio-histogram>
           </iobio-panel>
 
           <iobio-panel>
@@ -331,7 +330,6 @@
     <script type= 'module' src="./home_page.js"></script>
     <script type= 'module' src="./file_requirement.js"></script>
     <script type= 'module' src="./license_page.js"></script>
-    <script type= 'module' src="./compatibility_page.js"></script>
     <script type= 'module' src="./help_page.js"></script>
 
     <script type='module'>
@@ -384,10 +382,13 @@
         }
 
         const [ alignmentUrlRes, indexUrlRes, bedUrlRes ] = await Promise.all(promises);
-
+       
         alignmentUrl = alignmentUrlRes.url
         indexUrl = indexUrlRes.url;
-        bedUrl = bedUrlRes.url;
+        if (bedUrlRes) {
+          bedUrl = bedUrlRes.url;
+        }
+        
       }
       else {
         alignmentUrl = urlParams.get("alignment-url");
@@ -433,6 +434,23 @@
 
         return request;
       }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const chart = document.querySelector('#read-coverage-histogram');
+
+        // Set the custom formatters for the histogram
+        if (chart) {
+          chart.tooltipFormatter = (d) => `${d[0]}, ${precisionRound(d[1] * 100, 2)}%`;
+          chart.xAxisTickFormatter = (d) => `${d}X`;
+          chart.yAxisTickFormatter = (d) => `${d * 100}%`;
+        }
+        
+        function precisionRound(number, precision) {
+          const factor = Math.pow(10, precision);
+          return Math.round(number * factor) / factor;
+        }
+
+      });
 
       document.addEventListener('selected-regions-change', (event) => {
         broker.regions = event.detail;
