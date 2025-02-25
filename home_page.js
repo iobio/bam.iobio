@@ -208,17 +208,18 @@ class HomePage extends HTMLElement {
     }
 
     async handleLocalFileLoaded(event) {
+
         const files = event.detail.files
-        // set up the waygate
+
+        waygate.setServerUri('https://waygate.iobio.io');
+
         const dirTree = waygate.openDirectory();
         dirTree.addFiles(files)
 
         const listener = await waygate.listen({
-            serverDomain: waygate.setServerUri('https://waygate.iobio.io'),
             tunnelType: 'websocket',
         });
         
-        // set up the new URLs for the files
         const tunnelDomain = listener.getDomain();
         waygate.serve(listener, waygate.directoryTreeHandler(dirTree));
         const url1 = `https://${tunnelDomain}/${files[0].name}`;
