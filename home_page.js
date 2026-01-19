@@ -2,7 +2,7 @@ import { commonCss, getDataBroker } from './lib/iobio-charts/common.js';
 import { navigateTo } from './router.js';
 import { URLInputModal } from './url_input_modal.js';
 import { LocalFileInputModal } from './local_file_input_modal.js'; 
-import waygate from 'waygate';
+import * as waygate from 'waygate';
 
 
 const homePageTemplate = document.createElement('template');
@@ -218,6 +218,7 @@ class HomePage extends HTMLElement {
 
         const listener = await waygate.listen({
             tunnelType: 'websocket',
+            clientName: 'bam.iobio',
         });
         
         const tunnelDomain = listener.getDomain();
